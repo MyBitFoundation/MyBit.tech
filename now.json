@@ -2,6 +2,7 @@
   "version": 2,
   "builds": [
     { "src": "mybit/index.js", "use": "@now/node-server" },
-    { "src": "mybit-go/index.js", "use": "@now/node-server" }
+    { "src": "mybit-go/index.js", "use": "@now/node-server" },
+    { "src": "version/index.js", "use": "@now/node-server" }
   ]
 }
