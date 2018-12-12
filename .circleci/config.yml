@@ -15,8 +15,7 @@ jobs:
             GIT_HASH=$(git rev-parse --short HEAD)
             SANITIZED_BRANCH=$(tr "/" "-" <<<$CIRCLE_BRANCH)
             VERY_SANITIZED_BRANCH=$(tr "." "-" <<<$SANITIZED_BRANCH)
-            echo ${GIT_HASH} > mybit/version
-            echo ${GIT_HASH} > mybit-go/version
+            echo ${GIT_HASH} > version/version
             BUILD_URL=$(npx now --name api.mybit.io -t $NOW_DEVELOPMENT_TOKEN --public)
             npx now alias ${BUILD_URL} \
             ${GIT_HASH}-api-mybit-io-dev -t \
