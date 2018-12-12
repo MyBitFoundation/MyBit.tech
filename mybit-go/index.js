@@ -1,9 +1,38 @@
-const app = require('express')()
+const app = require('express')(),
+      fs = require('fs'),
+      path = require('path'),
+      { promisify } = require('util');
 
-app.set('port', process.env.PORT || 8081);
+const readFileAsync = promisify(fs.readFile);
 
-app.get('*', (req, res) => {
-  res.send('MyBit Go API');
-})
+async function getVersion() {
+  try {
+    const filePath = path.join(__dirname, 'version');
+    const text = await readFileAsync(
+      filePath,
+      { encoding: 'utf8' }
+    );
+    return text;
+  }
+  catch (err) {
+    console.log('Err', err)
+    return err;
+  }
+}
 
-app.listen(app.get('port'));
+function main(app, version) {
+  app.set('port', process.env.PORT || 8081);
+
+  app.get('/', (req, res) => {
+    res.send('MyBit Go API');
+  })
+
+  app.get('/version', (req, res) => {
+    res.send(version);
+  })
+
+  app.listen(app.get('port'));
+}
+
+getVersion()
+  .then(version => main(app, version));
