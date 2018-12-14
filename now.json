@@ -5,5 +5,8 @@
     { "src": "mybit-go/index.js", "use": "@now/node-server" },
     { "src": "version/index.js", "use": "@now/node-server" },
     { "src": "token-sale/index.js", "use": "@now/node-server" }
-  ]
+  ], 
+  "env": {
+	"INFURA_API_KEY": "@infura-api-key"
+  }
 }
