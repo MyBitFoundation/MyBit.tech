@@ -8,7 +8,8 @@
     "start:mybit": "node mybit/index.js",
     "start:mybit-go": "node mybit-go/index.js",
     "start:token-sale": "node token-sale/index.js",
-    "start:version": "node version/index.js"
+    "start:version": "node version/index.js",
+    "now-start": "node token-sale/index.js"
   },
   "keywords": [],
   "author": "",
