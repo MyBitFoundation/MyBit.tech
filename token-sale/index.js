@@ -1,6 +1,8 @@
+require('dotenv').load();
 const app = require('express')()
 const fetch = require('isomorphic-unfetch');
 const Web3 = require('web3');
+const cors = require('cors')
 const core = require('./core');
 
 const web3 = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`));
@@ -14,6 +16,8 @@ let gasPrice = 0;
 let started = false;
 let currentPeriodTotal = undefined;
 let exchangeRate = undefined;
+
+app.use(cors());
 
 app.get('/contributions', (req, res) => {
   if(!loaded){
@@ -71,7 +75,7 @@ async function PullContributions(){
       currentDay = Math.floor(((Math.floor(Date.now() / 1000) - timestampStartTokenSale) / 86400) + 1);
 
     } else {
-      setTimeout(PullContributions, (timestampStartTokenSale * 1000 - Date.now()) + 5000);
+      setTimeout(PullContributions, timestampStartTokenSale * 1000 - Date.now());
     }
     contributions = await core.getAllContributionsPerDay(web3, currentDay, timestampStartTokenSale * 1000);
 
@@ -90,7 +94,7 @@ async function GetPrice(){
     const response = await fetch('https://api.coinmarketcap.com/v2/ticker/1027/');
     const jsonResponse = await response.json();
     const { price } = jsonResponse.data.quotes.USD;
-    ethPrice = price;
+    ethPrice = price; 
   } catch (error) {
     console.log(error);
   }
