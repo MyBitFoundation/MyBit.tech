@@ -1,6 +1,8 @@
 const TokenSale = require('./constants/contracts/TokenSale');
 const MyBitToken = require('./constants/contracts/MyBitToken');
 const dayjs = require('dayjs');
+const BLOCK_NUMBER_CONTRACT_CREATION = 6910971;
+
 
 async function getStartTimestamp(web3){
   return new Promise(async (resolve, reject) => {
@@ -32,7 +34,7 @@ async function getAllContributionsPerDay(web3, currentDay, timestampStartTokenSa
 
       let logContributions = await tokenSaleContract.getPastEvents(
         'LogTokensPurchased',
-        { fromBlock: 0, toBlock: 'latest' },
+        { fromBlock: BLOCK_NUMBER_CONTRACT_CREATION, toBlock: 'latest' },
       );
 
       let contributions = processContributions(web3, logContributions, currentDay, timestampStartTokenSale);
