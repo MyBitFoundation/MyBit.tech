@@ -5,7 +5,7 @@ const Web3 = require('web3');
 const cors = require('cors')
 const core = require('./core');
 
-const web3 = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`));
+const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`));
 
 let contributions = [];
 let timestampStartTokenSale = 0;
