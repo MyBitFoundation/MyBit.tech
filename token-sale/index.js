@@ -1,11 +1,17 @@
 require('dotenv').load();
-const app = require('express')()
+const express = require('express');
 const fetch = require('isomorphic-unfetch');
 const Web3 = require('web3');
-const cors = require('cors')
+const Tx = require('ethereumjs-tx');
 const core = require('./core');
+const AssetCollateral = require('./constants/contracts/AssetCollateral');
+const dev = process.env.NODE_ENV === 'development';
 
 const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`));
+const web3Collateral = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`));
+
+const ADDRESS_ASSET_COLLATERAL = process.env.ADDRESS_ASSET_COLLATERAL;
+const PRIVATE_KEY_ASSET_COLLATERAL = Buffer.from(process.env.PRIVATE_KEY_ASSET_COLLATERAL, 'hex');
 
 let contributions = [];
 let timestampStartTokenSale = 0;
@@ -17,7 +23,17 @@ let started = false;
 let currentPeriodTotal = undefined;
 let exchangeRate = undefined;
 
-app.use(cors());
+const app = express();
+
+if (dev) {
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
+}
+
+app.use(express.json())
 
 app.get('/contributions', (req, res) => {
   if(!loaded){
@@ -61,11 +77,55 @@ app.get('/gasprice', (req, res) => {
   })
 })
 
+app.post('/collateral', async (req, res) => {
+  const escrow = req.body.escrow;
+  const assetId = req.body.assetId;
+  const assetManager = req.body.address;
+  const result = await lockEscrow(assetId, assetManager, escrow);
+  res.sendStatus(result);
+});
+
 app.get('*', (req, res) => {
   res.send('Token Distribution Endpoint');
 })
 
 app.listen(process.env.PORT || 8082);
+
+async function lockEscrow(assetId, assetManager, escrow){
+  return new Promise(async (resolve, reject) => {
+    try{
+      var txnCount = await web3Collateral.eth.getTransactionCount(ADDRESS_ASSET_COLLATERAL);
+
+      const assetCollateral = new web3Collateral.eth.Contract(
+        AssetCollateral.ABI,
+        AssetCollateral.ADDRESS
+      );
+
+      var data = await assetCollateral.methods.lockEscrow(assetId, assetManager, escrow).encodeABI();
+      let rawTx = {
+        nonce: web3Collateral.utils.toHex(txnCount),
+        gasPrice: web3Collateral.utils.toHex(20000000000),
+        gasLimit: web3Collateral.utils.toHex(140000),
+        to: AssetCollateral.ADDRESS,
+        data: data,
+      }
+
+      const tx = new Tx(rawTx)
+      tx.sign(PRIVATE_KEY_ASSET_COLLATERAL)
+      let serializedTx = "0x" + tx.serialize().toString('hex');
+      web3Collateral.eth.sendSignedTransaction(serializedTx)
+      .on('receipt', function (receipt) {
+        resolve(200)
+      }).on('error', function (error) {
+        console.log(error)
+        resolve(500)
+      });
+    }catch(err){
+      console.log(err)
+      resolve(500);
+    }
+  })
+}
 
 async function PullContributions(){
   try{

@@ -1,6 +1,8 @@
 {
   "version": 1,
   "env": {
-    "INFURA_API_KEY": "@infura-api-key"
+    "INFURA_API_KEY": "@infura-api-key",
+    "ADDRESS_ASSET_COLLATERAL": "@address-asset-collateral",
+    "PRIVATE_KEY_ASSET_COLLATERAL": "@private-key-asset-collateral"
   }
 }
