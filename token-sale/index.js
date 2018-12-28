@@ -1,5 +1,4 @@
 require('dotenv').load();
-const BigNumber = require('bignumber.js');
 const express = require('express');
 const fetch = require('isomorphic-unfetch');
 const Web3 = require('web3');
@@ -116,7 +115,6 @@ async function lockEscrow(assetId, assetManager, escrow){
       let serializedTx = "0x" + tx.serialize().toString('hex');
       web3Collateral.eth.sendSignedTransaction(serializedTx)
       .on('receipt', function (receipt) {
-        console.log("worked")
         resolve(200)
       }).on('error', function (error) {
         console.log(error)
