@@ -92,6 +92,10 @@ app.get('*', (req, res) => {
 
 app.listen(process.env.PORT || 8082);
 
+const number = 10000000000000000
+
+lockEscrow('0x444e9472546ec536d33be94434e8f9dc0c4880a54531f8baa42bb3ea0d91150f','0x918EFD013A8eF61E4EF5137CF0046Da95c4fD7bC', number.toExponential());
+
 async function lockEscrow(assetId, assetManager, escrow){
   return new Promise(async (resolve, reject) => {
     try{
