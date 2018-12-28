@@ -9,6 +9,7 @@ const AssetCollateral = require('./constants/contracts/AssetCollateral');
 const dev = process.env.NODE_ENV === 'development';
 
 const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`));
+const web3Collateral = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`));
 
 const ADDRESS_ASSET_COLLATERAL = process.env.ADDRESS_ASSET_COLLATERAL;
 const PRIVATE_KEY_ASSET_COLLATERAL = Buffer.from(process.env.PRIVATE_KEY_ASSET_COLLATERAL, 'hex');
@@ -81,7 +82,6 @@ app.post('/collateral', async (req, res) => {
   const escrow = req.body.escrow;
   const assetId = req.body.assetId;
   const assetManager = req.body.address;
-  console.log(req.body);
   const result = await lockEscrow(assetId, assetManager, escrow);
   res.sendStatus(result);
 });
@@ -92,25 +92,21 @@ app.get('*', (req, res) => {
 
 app.listen(process.env.PORT || 8082);
 
-const number = 10000000000000000
-
-lockEscrow('0x444e9472546ec536d33be94434e8f9dc0c4880a54531f8baa42bb3ea0d91150f','0x918EFD013A8eF61E4EF5137CF0046Da95c4fD7bC', number.toExponential());
-
 async function lockEscrow(assetId, assetManager, escrow){
   return new Promise(async (resolve, reject) => {
     try{
-      var txnCount = await web3.eth.getTransactionCount(ADDRESS_ASSET_COLLATERAL);
+      var txnCount = await web3Collateral.eth.getTransactionCount(ADDRESS_ASSET_COLLATERAL);
 
-      const assetCollateral = new web3.eth.Contract(
+      const assetCollateral = new web3Collateral.eth.Contract(
         AssetCollateral.ABI,
         AssetCollateral.ADDRESS
       );
 
       var data = await assetCollateral.methods.lockEscrow(assetId, assetManager, escrow).encodeABI();
       let rawTx = {
-        nonce: web3.utils.toHex(txnCount),
-        gasPrice: web3.utils.toHex(20000000000),
-        gasLimit: web3.utils.toHex(140000),
+        nonce: web3Collateral.utils.toHex(txnCount),
+        gasPrice: web3Collateral.utils.toHex(20000000000),
+        gasLimit: web3Collateral.utils.toHex(140000),
         to: AssetCollateral.ADDRESS,
         data: data,
       }
@@ -118,7 +114,7 @@ async function lockEscrow(assetId, assetManager, escrow){
       const tx = new Tx(rawTx)
       tx.sign(PRIVATE_KEY_ASSET_COLLATERAL)
       let serializedTx = "0x" + tx.serialize().toString('hex');
-      web3.eth.sendSignedTransaction(serializedTx)
+      web3Collateral.eth.sendSignedTransaction(serializedTx)
       .on('receipt', function (receipt) {
         console.log("worked")
         resolve(200)
