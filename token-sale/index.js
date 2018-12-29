@@ -10,8 +10,8 @@ const dev = process.env.NODE_ENV === 'development';
 const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`));
 const web3Collateral = new Web3(new Web3.providers.HttpProvider(`https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`));
 
-const ADDRESS_ASSET_COLLATERAL = process.env.ADDRESS_ASSET_COLLATERAL;
-const PRIVATE_KEY_ASSET_COLLATERAL = Buffer.from(process.env.PRIVATE_KEY_ASSET_COLLATERAL, 'hex');
+const ADDRESS = process.env.ADDRESS;
+const ADDRESS_PRIVATE_KEY = Buffer.from(process.env.ADDRESS_PRIVATE_KEY, 'hex');
 
 let contributions = [];
 let timestampStartTokenSale = 0;
@@ -94,7 +94,7 @@ app.listen(process.env.PORT || 8082);
 async function lockEscrow(assetId, assetManager, escrow){
   return new Promise(async (resolve, reject) => {
     try{
-      var txnCount = await web3Collateral.eth.getTransactionCount(ADDRESS_ASSET_COLLATERAL);
+      var txnCount = await web3Collateral.eth.getTransactionCount(ADDRESS);
 
       const assetCollateral = new web3Collateral.eth.Contract(
         AssetCollateral.ABI,
@@ -111,7 +111,7 @@ async function lockEscrow(assetId, assetManager, escrow){
       }
 
       const tx = new Tx(rawTx)
-      tx.sign(PRIVATE_KEY_ASSET_COLLATERAL)
+      tx.sign(ADDRESS_PRIVATE_KEY)
       let serializedTx = "0x" + tx.serialize().toString('hex');
       web3Collateral.eth.sendSignedTransaction(serializedTx)
       .on('receipt', function (receipt) {
