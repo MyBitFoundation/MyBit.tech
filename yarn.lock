@@ -298,7 +298,7 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-cors@^2.8.1, cors@^2.8.5:
+cors@^2.8.1:
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
   dependencies:
@@ -1394,8 +1394,8 @@ scryptsy@^1.2.1:
     pbkdf2 "^3.0.3"
 
 secp256k1@^3.0.1:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.6.0.tgz#26b44b0df3562319b20f5070efcdd4fa36112650"
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.6.1.tgz#f0475d42096218ff00e45a127242abdff9285335"
   dependencies:
     bindings "^1.2.1"
     bip66 "^1.1.3"
