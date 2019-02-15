@@ -1,10 +1,11 @@
-const TokenSale = require('./constants/contracts/TokenSale');
-const MyBitToken = require('./constants/contracts/MyBitToken');
+import {
+  TokenSale,
+} from '../constants';
+
 const dayjs = require('dayjs');
 const BLOCK_NUMBER_CONTRACT_CREATION = 6910971;
 
-
-async function getStartTimestamp(web3){
+export const getStartTimestamp = async (web3) => {
   return new Promise(async (resolve, reject) => {
     try {
       const tokenSaleContract = new web3.eth.Contract(
@@ -24,7 +25,7 @@ async function getStartTimestamp(web3){
   });
 }
 
-async function getAllContributionsPerDay(web3, currentDay, timestampStartTokenSale){
+export const getAllContributionsPerDay = (web3, currentDay, timestampStartTokenSale) => {
   return new Promise(async (resolve, reject) => {
     try {
       const tokenSaleContract = new web3.eth.Contract(
@@ -48,7 +49,7 @@ async function getAllContributionsPerDay(web3, currentDay, timestampStartTokenSa
   })
 }
 
-async function createDataForInactiveDays(contributions, currentDay, timestampStartTokenSale){
+const createDataForInactiveDays = async (contributions, currentDay, timestampStartTokenSale) => {
   contributions = contributions.map((contribution, index) => {
     if(contribution) {
       return contribution;
@@ -74,11 +75,11 @@ async function createDataForInactiveDays(contributions, currentDay, timestampSta
   return contributions;
 }
 
-function getDateForPeriod(day, timestampStartTokenSale){
+const getDateForPeriod = (day, timestampStartTokenSale) => {
   return(dayjs(timestampStartTokenSale).add(day + 1, 'day').format('MMM, DD YYYY'))
 }
 
-function processContributions(web3, log, currentDay, timestampStartTokenSale){
+const processContributions = (web3, log, currentDay, timestampStartTokenSale) => {
   const contributions = Array(365).fill();
   for (const contribution of log) {
     const contributor = contribution.returnValues._contributor;
@@ -111,9 +112,3 @@ function processContributions(web3, log, currentDay, timestampStartTokenSale){
   }
   return contributions;
 }
-
-
-module.exports = {
-  getStartTimestamp: getStartTimestamp,
-  getAllContributionsPerDay: getAllContributionsPerDay,
-};
