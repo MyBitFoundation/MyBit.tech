@@ -26,7 +26,7 @@ export const getDetails = () => ({
   exchangeRate,
 })
 
-export const getHomePageDetails = () => ({
+export const getDetailsForMyBitHomePage = () => ({
   timestampStartTokenSale,
   currentPeriodTotal,
   loaded,

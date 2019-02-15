@@ -54,7 +54,7 @@ app.get('/token-sale/home', (req, res) => {
     });
   } else {
     res.send({
-      ...TokenSaleController.getHomePageDetails(),
+      ...TokenSaleController.getDetailsForMyBitHomePage(),
       ethPrice: PricesController.prices.ethereum.price,
     });
   }
