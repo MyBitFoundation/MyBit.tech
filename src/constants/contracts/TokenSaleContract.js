@@ -1,4 +1,4 @@
-module.exports = {
+export const TokenSale = {
   ADDRESS: '0xcca36039cfdd0753d3aa9f1b4bf35b606c8ed971',
   ABI: [
 {
