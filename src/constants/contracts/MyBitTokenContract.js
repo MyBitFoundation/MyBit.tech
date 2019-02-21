@@ -1,4 +1,4 @@
-module.exports = {
+export const MyBitToken = {
   ADDRESS: '0x5d60d8d7eF6d37E16EBABc324de3bE57f135e0BC',
   ABI: [
   {
