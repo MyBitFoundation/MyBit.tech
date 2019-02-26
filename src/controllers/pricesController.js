@@ -45,4 +45,4 @@ const GetPrices = async () => {
 GetPrices();
 
 //updates every 10 mins
-setInterval(() => GetPrices, 600000);
+setInterval(GetPrices, 600000);
