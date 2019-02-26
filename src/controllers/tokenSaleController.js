@@ -67,4 +67,4 @@ const PullContributions = async () => {
 PullContributions();
 
 //updates every 30 seconds
-setInterval(() => PullContributions, 30000);
+setInterval(PullContributions, 30000);
