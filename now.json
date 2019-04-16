@@ -1,8 +1,6 @@
 {
   "version": 1,
   "env": {
-    "INFURA_API_KEY": "@infura-api-key",
-    "ADDRESS": "@address",
-    "ADDRESS_PRIVATE_KEY": "@address-private-key"
+    "WEBSOCKET_PROVIDER_MAINNET": "@websocket_provider_mainnet"
   }
 }
