@@ -78,14 +78,6 @@ app.get('/prices', (req, res) => {
   res.send(PricesController.prices)
 })
 
-app.post('/collateral', async (req, res) => {
-  const escrow = req.body.escrow;
-  const assetId = req.body.assetId;
-  const assetManager = req.body.address;
-  const result = await CollateralController.lockEscrow(assetId, assetManager, escrow);
-  res.sendStatus(result);
-});
-
 app.get('*', (req, res) => {
   res.send('MyBit API endpoint.');
 })
