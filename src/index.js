@@ -3,7 +3,6 @@ var cors = require('cors')
 const express = require('express');
 
 import {
-  GAS_PRICE,
   LIST_TOKENS_PRICES,
   AssetCollateral,
 } from './constants';
@@ -11,8 +10,8 @@ import {
 import {
   TokenSaleController,
   PricesController,
-  CollateralController,
   VersionController,
+  GasController,
 } from './controllers';
 
 import packageJson from '../package.json';
@@ -60,10 +59,12 @@ app.get('/token-sale/home', (req, res) => {
   }
 });
 
+app.get('/gasprice/health', (req, res) => {
+  res.sendStatus(GasController.errors ? 500 : 200)
+})
+
 app.get('/gasprice', (req, res) => {
-  res.send({
-    GAS_PRICE,
-  })
+  res.send(GasController.gasData)
 })
 
 app.get('/version', (req, res) => {
