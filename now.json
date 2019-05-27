@@ -1,6 +1,23 @@
 {
-  "version": 1,
+  "version": 2,
+  "name": "api.mybit.io",
   "env": {
     "WEBSOCKET_PROVIDER_MAINNET": "@websocket_provider_mainnet"
-  }
+  },
+  "builds": [{
+    "src": "lib/index.js",
+    "use": "@now/node-server"
+  }],
+  "routes": [
+    {"src": "/version", "dest": "lib/index.js"},
+    {"src": "/token-sale/contributions", "dest": "lib/index.js"},
+    {"src": "/token-sale/contributions/health", "dest": "lib/index.js"},
+    {"src": "/token-sale/home/health", "dest": "lib/index.js"},
+    {"src": "/token-sale/home", "dest": "lib/index.js"},
+    {"src": "/gasprice", "dest": "lib/index.js"},
+    {"src": "/gasprice/health", "dest": "lib/index.js"},
+    {"src": "/prices", "dest": "lib/index.js"},
+    {"src": "/prices/health", "dest": "lib/index.js"},
+    {"src": "/(.*)", "dest": "lib/index.js"}
+  ]
 }

@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-dev": "NODE_ENV=development babel-watch --watch src src/index.js",
-    "compile": "rimraf lib/ && babel -d lib/ src/",
-    "start:version": "node version/index.js",
-    "now-start": "npm run compile && node lib/index.js"
+    "build": "rimraf lib/ && babel -d lib/ src/",
+    "start:version": "node version/index.js"
   },
   "keywords": [],
   "author": "",
