@@ -5,12 +5,14 @@ import {
   getAllContributionsPerDay,
 } from '../api/tokenSaleCore';
 
-const web3 = new Web3(new Web3.providers.WebsocketProvider(process.env.WEBSOCKET_PROVIDER_MAINNET));
+const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.WEBSOCKET_PROVIDER_MAINNET}`));
 
 export let loaded = false;
 export let errors = false;
 
-let contributions = [];
+//Block number at which the contract was deployed
+let fromBlockNumber = 6910971;
+let contributions = undefined;
 let timestampStartTokenSale = 0;
 let currentDay = undefined;
 let started = false;
@@ -37,6 +39,7 @@ export const getDetailsForMyBitHomePage = () => ({
 const PullContributions = async () => {
   try{
     console.log(`\n\n$${new Date().toString()} - Going to pull contributions from web3`)
+    const toBlockNumber = await web3.eth.getBlockNumber();
     timestampStartTokenSale = await getStartTimestamp(web3);
     started = timestampStartTokenSale <= Math.floor(Date.now() / 1000);
     console.log('Token distribution start timestamp: ', timestampStartTokenSale)
@@ -47,7 +50,8 @@ const PullContributions = async () => {
     } else {
       setTimeout(PullContributions, timestampStartTokenSale * 1000 - Date.now());
     }
-    contributions = await getAllContributionsPerDay(web3, currentDay, timestampStartTokenSale * 1000);
+    console.log("Getting contributions from block number: ", fromBlockNumber + " to block number: ", toBlockNumber)
+    contributions = await getAllContributionsPerDay(web3, currentDay, timestampStartTokenSale * 1000, fromBlockNumber, toBlockNumber, contributions);
 
     currentPeriodTotal = contributions[currentDay ? currentDay - 1 : 0].total_eth;
     console.log(`Current period total: ${currentPeriodTotal} ETH`)
@@ -57,6 +61,8 @@ const PullContributions = async () => {
 
     loaded = contributions ? true : false;
     errors = false;
+    //So that we don't have to keep fetching data we already have
+    fromBlockNumber = toBlockNumber + 1;
     console.log(`${new Date().toString()} - Finished pulling contributions from web3`)
   }catch(err){
     errors = true;
@@ -66,5 +72,5 @@ const PullContributions = async () => {
 
 PullContributions();
 
-//updates every 30 seconds
-setInterval(PullContributions, 30000);
+//updates every 5 minutes (every ~30 blocks)
+setInterval(PullContributions, 300000);
