@@ -5,7 +5,7 @@ import {
   getAllContributionsPerDay,
 } from '../api/tokenSaleCore';
 
-const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.WEBSOCKET_PROVIDER_MAINNET}`));
+const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`));
 
 export let loaded = false;
 export let errors = false;
