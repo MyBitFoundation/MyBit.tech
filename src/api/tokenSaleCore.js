@@ -3,7 +3,6 @@ import {
 } from '../constants';
 
 const dayjs = require('dayjs');
-const BLOCK_NUMBER_CONTRACT_CREATION = 6910971;
 
 export const getStartTimestamp = async (web3) => {
   return new Promise(async (resolve, reject) => {
@@ -25,7 +24,7 @@ export const getStartTimestamp = async (web3) => {
   });
 }
 
-export const getAllContributionsPerDay = (web3, currentDay, timestampStartTokenSale) => {
+export const getAllContributionsPerDay = (web3, currentDay, timestampStartTokenSale, fromBlockNumber, toBlockNumer, contributions) => {
   return new Promise(async (resolve, reject) => {
     try {
       const tokenSaleContract = new web3.eth.Contract(
@@ -35,10 +34,10 @@ export const getAllContributionsPerDay = (web3, currentDay, timestampStartTokenS
 
       let logContributions = await tokenSaleContract.getPastEvents(
         'LogTokensPurchased',
-        { fromBlock: BLOCK_NUMBER_CONTRACT_CREATION, toBlock: 'latest' },
+        { fromBlock: fromBlockNumber, toBlock: toBlockNumer },
       );
 
-      let contributions = processContributions(web3, logContributions, currentDay, timestampStartTokenSale);
+      contributions = processContributions(web3, logContributions, currentDay, timestampStartTokenSale, contributions);
       contributions = createDataForInactiveDays(contributions, currentDay, timestampStartTokenSale);
 
       resolve(contributions);
@@ -79,8 +78,8 @@ const getDateForPeriod = (day, timestampStartTokenSale) => {
   return(dayjs(timestampStartTokenSale).add(day + 1, 'day').format('MMM, DD YYYY'))
 }
 
-const processContributions = (web3, log, currentDay, timestampStartTokenSale) => {
-  const contributions = Array(365).fill();
+const processContributions = (web3, log, currentDay, timestampStartTokenSale, contributions) => {
+  contributions = !contributions ? Array(365).fill() : contributions;
   for (const contribution of log) {
     const contributor = contribution.returnValues._contributor;
     const contributed = Number(web3.utils.fromWei(contribution.returnValues._amount.toString(), 'ether'))
