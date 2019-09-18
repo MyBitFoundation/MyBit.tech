@@ -1,7 +1,4 @@
 language: node_js
-before_install:
-  - sudo apt-get install aptitude -y
-  - sudo aptitude install git -y
 node_js:
   - "8"
 cache:
