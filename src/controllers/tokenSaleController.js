@@ -4,8 +4,9 @@ import {
   getStartTimestamp,
   getAllContributionsPerDay,
 } from '../api/tokenSaleCore';
+import { getNodeSmithProvider } from '../constants/index.js';
 
-const web3 = new Web3(new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`));
+const web3 = new Web3(new Web3.providers.HttpProvider(getNodeSmithProvider(process.env.NODESMITH_API_KEY)));
 
 export let loaded = false;
 export let errors = false;
