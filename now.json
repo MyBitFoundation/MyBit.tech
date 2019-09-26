@@ -1,6 +1,6 @@
 {
   "version": 1,
   "env": {
-    "INFURA_API_KEY": "@infura-api-key"
+    "NODESMITH_API_KEY": "@nodesmith_api_key"
   }
 }
